@@ -1,0 +1,18 @@
+{
+    "name": "jordihomedes24/lune-framework",
+    "description": "PHP framework inspired on Laravel",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Lune\\": "src/Lune"
+        }
+    },
+    "authors": [
+        {
+            "name": "jordihomedes24",
+            "email": "jordihomedes48@gmail.com"
+        }
+    ],
+    "require": {}
+}
