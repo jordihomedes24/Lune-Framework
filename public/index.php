@@ -3,6 +3,7 @@
 require_once "../vendor/autoload.php";
 
 use Lune\HttpNotFoundException;
+use Lune\phpNativeServer;
 use Lune\Request;
 use Lune\Route;
 use Lune\Router;
@@ -19,7 +20,7 @@ $router->post('/test', function () {
 });
 
 try {
-    $route = $router->resolve(new Request(new Server()));
+    $route = $router->resolve(new Request(new phpNativeServer()));
     $action = $route->action();
     print($action());
 } catch (HttpNotFoundException $e) {
