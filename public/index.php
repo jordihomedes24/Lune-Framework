@@ -10,16 +10,16 @@ use Lune\Routing\Router;
 
 $router = new Router();
 
-$router->get('/test', function (Request $request) {
-    $response = new Response();
-    $response->setHeader("Content-Type", "application/json");
-    $response->setContent(json_encode(["message" => "GET OK"]));
-
-    return $response;
+$router->get('/test', function (Request $request) {        
+    return Response::text("GET OK");
 });
 
 $router->post('/test', function (Request $request) {
-    return "POST OK";
+    return Response::text("POST OK");
+});
+
+$router->get('/redirect', function (Request $request) {
+    return Response::redirect("/test");
 });
 
 $server = new phpNativeServer();
@@ -30,9 +30,6 @@ try {
     $response = $action($request);
     $server->sendResponse($response);
 } catch (HttpNotFoundException $e) {
-    $response = new Response();
-    $response->setStatus(404);
-    // $response->setContent("NOT FOUND");
-    $response->setHeader("Content-Type", "text/plain");
+    $response = Response::text("NOT FOUND")->setStatus(404);
     $server->sendResponse($response);
 }
