@@ -1,6 +1,6 @@
 <?php
 
-namespace Lune\Tests;
+namespace Lune\Tests\Routing;
 
 use Lune\Http\HttpMethod;
 use Lune\Http\Request;
