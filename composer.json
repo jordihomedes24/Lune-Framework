@@ -14,7 +14,8 @@
         }
     },
     "scripts": {
-        "tests": "phpunit --color=always --testdox tests/"
+        "tests": "phpunit --color=always --testdox tests/",
+        "fixer": "php-cs-fixer fix --diff"
     },
     "authors": [
         {
@@ -23,6 +24,7 @@
         }
     ],
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "*",
+        "friendsofphp/php-cs-fixer": "^3.34"
     }
 }

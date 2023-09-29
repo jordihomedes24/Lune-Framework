@@ -8,8 +8,10 @@ use Lune\Routing\Router;
 use Lune\Server\Server;
 use PHPUnit\Framework\TestCase;
 
-class RouterTest extends TestCase {
-    private function createMockRequest(string $uri, HttpMethod $method) {
+class RouterTest extends TestCase
+{
+    private function createMockRequest(string $uri, HttpMethod $method)
+    {
         $mockServer = $this->getMockBuilder(Server::class)->getMock();
         $mockServer->method("requestUri")->willReturn($uri);
         $mockServer->method("requestMethod")->willReturn($method);
@@ -17,7 +19,8 @@ class RouterTest extends TestCase {
         return new Request($mockServer);
     }
 
-    public function test_resolve_basic_route_with_callback_action() {
+    public function test_resolve_basic_route_with_callback_action()
+    {
         $uri = "/test";
         $action = fn () => "THIS IS A TEST";
         $router = new Router();
@@ -27,27 +30,30 @@ class RouterTest extends TestCase {
         $this->assertEquals($action, $route->action());
     }
 
-    public function test_resolve_multiple_basic_route_with_callback_action() {
+    public function test_resolve_multiple_basic_route_with_callback_action()
+    {
         $routes = [
             '/test' => fn () => "test",
             '/foo' => fn () => "foo",
             '/bar' => fn () => "bar",
-            '/long/nested/route' => fn() => "long nested route",
+            '/long/nested/route' => fn () => "long nested route",
         ];
 
         $router = new Router();
-        
-        foreach($routes as $uri => $action) {
+
+        foreach ($routes as $uri => $action) {
             $router->get($uri, $action);
         }
 
-        foreach($routes as $uri => $action) {
-            $route = $router->resolve($this->createMockRequest($uri, HttpMethod::GET));;
+        foreach ($routes as $uri => $action) {
+            $route = $router->resolve($this->createMockRequest($uri, HttpMethod::GET));
+            ;
             $this->assertEquals($action, $route->action());
         }
     }
 
-    public function test_resolve_multiple_basic_route_with_callback_action_for_different_http_methods() {
+    public function test_resolve_multiple_basic_route_with_callback_action_for_different_http_methods()
+    {
         $routes = [
             [HttpMethod::GET, "/test", fn () => "get"],
             [HttpMethod::POST, "/test", fn () => "post"],
@@ -64,12 +70,13 @@ class RouterTest extends TestCase {
 
         $router = new Router();
 
-        foreach($routes as [$method, $uri, $action]) {
+        foreach ($routes as [$method, $uri, $action]) {
             $router->{strtolower($method->value)}($uri, $action);
         };
 
-        foreach($routes as [$method, $uri, $action]) {
-            $route = $router->resolve($this->createMockRequest($uri, $method));;
+        foreach ($routes as [$method, $uri, $action]) {
+            $route = $router->resolve($this->createMockRequest($uri, $method));
+            ;
             $this->assertEquals($action, $route->action());
         };
     }

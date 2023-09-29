@@ -7,14 +7,15 @@ use function PHPUnit\Framework\isNull;
 /**
  * HTTP response that will be sent to the client.
  */
-class Response {
+class Response
+{
     /**
      * Response HTTP status code
      *
      * @var integer
      */
     protected int $status = 200;
-    
+
     /**
      * Response HTTP headers
      *
@@ -34,7 +35,8 @@ class Response {
      *
      * @return integer
      */
-    public function status(): int {
+    public function status(): int
+    {
         return $this->status;
     }
 
@@ -44,8 +46,9 @@ class Response {
      * @param integer $status
      * @return self
      */
-    public function setStatus(int $status): self {
-        $this->status = $status; 
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
         return $this;
     }
 
@@ -54,7 +57,8 @@ class Response {
      *
      * @return array<string,string>
      */
-    public function headers(): array {
+    public function headers(): array
+    {
         return $this->headers;
     }
 
@@ -65,7 +69,8 @@ class Response {
      * @param string $value
      * @return self
      */
-    public function setHeader(string $header, string $value): self {
+    public function setHeader(string $header, string $value): self
+    {
         $this->headers[strtolower($header)] = $value;
         return $this;
     }
@@ -76,7 +81,8 @@ class Response {
      * @param string $header
      * @return self
      */
-    public function removeHeader(string $header): self {
+    public function removeHeader(string $header): self
+    {
         unset($this->headers[strtolower($header)]);
         return $this;
     }
@@ -86,7 +92,8 @@ class Response {
      *
      * @return string|null
      */
-    public function content(): ?string {
+    public function content(): ?string
+    {
         return $this->content;
     }
 
@@ -96,7 +103,8 @@ class Response {
      * @param string $content
      * @return self
      */
-    public function setContent(string $content): self {
+    public function setContent(string $content): self
+    {
         $this->content = $content;
         return $this;
     }
@@ -107,7 +115,8 @@ class Response {
      * @param string $value
      * @return self
      */
-    public function setContentType(string $value): self {
+    public function setContentType(string $value): self
+    {
         $this->setHeader("Content-Type", $value);
         return $this;
     }
@@ -117,8 +126,9 @@ class Response {
      *
      * @return void
      */
-    public function prepare() {
-        if(is_null($this->content)) {
+    public function prepare()
+    {
+        if (is_null($this->content)) {
             $this->removeHeader("Content-Type");
             $this->removeHeader("Content-Length");
         } else {
@@ -127,16 +137,17 @@ class Response {
     }
 
     /**
-     * Prepares the response to send a json 
+     * Prepares the response to send a json
      *
      * @param array $data
      * @return self
      */
-    public static function json(array $data): self {
-        return (new self()) 
+    public static function json(array $data): self
+    {
+        return (new self())
             ->setContentType("application/json")
             ->setContent(json_encode($data));
-    } 
+    }
 
     /**
      * Prepares the response to send a plain text
@@ -144,8 +155,9 @@ class Response {
      * @param string $text
      * @return self
      */
-    public static function text(string $text): self {
-        return (new self()) 
+    public static function text(string $text): self
+    {
+        return (new self())
             ->setContentType("text/plain")
             ->setContent($text);
     }
@@ -156,9 +168,10 @@ class Response {
      * @param string $uri
      * @return self
      */
-    public static function redirect(string $uri): self {
-        return (new self()) 
+    public static function redirect(string $uri): self
+    {
+        return (new self())
             ->setStatus(302)
-            ->setHeader("Location", $uri); 
+            ->setHeader("Location", $uri);
     }
 }

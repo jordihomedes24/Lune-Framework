@@ -5,24 +5,48 @@ namespace Lune\Server;
 use Lune\Http\HttpMethod;
 use Lune\Http\Response;
 
-class phpNativeServer implements Server {
-    public function requestUri(): string {
+/**
+ * PHP native server that uses `$_SERVER` global
+ */
+class phpNativeServer implements Server
+{
+    /**
+     * @inheritDoc
+     */
+    public function requestUri(): string
+    {
         return parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
     }
 
-    public function requestMethod(): HttpMethod {
+    /**
+     * @inheritDoc
+     */
+    public function requestMethod(): HttpMethod
+    {
         return HttpMethod::from($_SERVER["REQUEST_METHOD"]);
     }
 
-    public function postData(): array {
+    /**
+     * @inheritDoc
+     */
+    public function postData(): array
+    {
         return $_POST;
     }
 
-    public function queryParams(): array {
+    /**
+     * @inheritDoc
+     */
+    public function queryParams(): array
+    {
         return $_GET;
     }
 
-    public function sendResponse(Response $response) {
+    /**
+     * @inheritDoc
+     */
+    public function sendResponse(Response $response)
+    {
         //PHP sends Content-Type header by default, but it has to be removed if it has no content.
         //The content-Type header can't be removed if it is not set before.
         header("Content-Type: None");
@@ -30,7 +54,7 @@ class phpNativeServer implements Server {
 
         $response->prepare();
         http_response_code($response->status());
-        foreach($response->headers() as $header => $value) {
+        foreach ($response->headers() as $header => $value) {
             header("$header: $value");
         }
         print($response->content());

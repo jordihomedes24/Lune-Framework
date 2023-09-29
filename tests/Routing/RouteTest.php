@@ -5,8 +5,10 @@ namespace Lune\Tests\Routing;
 use Lune\Routing\Route;
 use PHPUnit\Framework\TestCase;
 
-class RouteTest extends TestCase {
-    public static function routesWithNoParameters() {
+class RouteTest extends TestCase
+{
+    public static function routesWithNoParameters()
+    {
         return [
             ['/'],
             ['/test'],
@@ -18,7 +20,8 @@ class RouteTest extends TestCase {
     /**
      * @dataProvider routesWithNoParameters
      */
-    public function test_regex_with_no_parameters(string $uri) {
+    public function test_regex_with_no_parameters(string $uri)
+    {
         $route = new Route($uri, fn () => "test");
         $this->assertTrue($route->matches($uri));
         $this->assertFalse($route->matches("$uri/extra/path"));
@@ -29,20 +32,22 @@ class RouteTest extends TestCase {
     /**
      * @dataProvider routesWithNoParameters
      */
-    public function test_regex_on_uri_that_ends_with_slash(string $uri) {
+    public function test_regex_on_uri_that_ends_with_slash(string $uri)
+    {
         $route = new Route($uri, fn () => "test");
         $this->assertTrue($route->matches("$uri/"));
     }
 
-    public static function routesWithParameters() {
+    public static function routesWithParameters()
+    {
         return [
             [
-                '/test/{test}', 
+                '/test/{test}',
                 '/test/1',
                 ['test' => 1],
             ],
             [
-                '/users/{user}', 
+                '/users/{user}',
                 '/users/2',
                 ['user' => 2],
             ],
@@ -71,7 +76,8 @@ class RouteTest extends TestCase {
     /**
      * @dataProvider routesWithParameters
      */
-    public function test_regex_with_parameters(string $definition, string $uri) {
+    public function test_regex_with_parameters(string $definition, string $uri)
+    {
         $route = new Route($definition, fn () => "test");
         $this->assertTrue($route->matches($uri));
         $this->assertFalse($route->matches("$uri/extra/path"));
@@ -83,7 +89,8 @@ class RouteTest extends TestCase {
     /**
      * @dataProvider routesWithParameters
      */
-    public function test_parse_parameters(string $definition, string $uri, array $expectedParameters) {
+    public function test_parse_parameters(string $definition, string $uri, array $expectedParameters)
+    {
         $route = new Route($definition, fn () => "test");
         $this->assertTrue($route->hasParameters());
         $this->assertEquals($expectedParameters, $route->parseParameters($uri));
