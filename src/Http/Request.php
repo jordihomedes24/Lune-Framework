@@ -2,6 +2,7 @@
 
 namespace Lune\Http;
 
+use Lune\Routing\Route;
 use Lune\Server\Server;
 
 /**
@@ -15,6 +16,13 @@ class Request
      * @var string
      */
     protected string $uri;
+
+    /**
+     * Route matched by uri
+     *
+     * @var Route
+     */
+    protected Route $route;
 
     /**
      * Request HTTP method
@@ -38,19 +46,6 @@ class Request
     protected array $query;
 
     /**
-     * Create a new request from the given `$server`
-     *
-     * @param Server $server
-     */
-    public function __construct(Server $server)
-    {
-        $this->uri = $server->requestUri();
-        $this->method = $server->requestMethod();
-        $this->data = $server->postData();
-        $this->query = $server->queryParams();
-    }
-
-    /**
      * Get the request uri
      *
      * @return string
@@ -61,6 +56,37 @@ class Request
     }
 
     /**
+     * Set request uri
+     *
+     * @param string $uri
+     * @return self
+     */
+    public function setUri(string $uri): self {
+        $this->uri = $uri;
+        return $this;
+    }
+
+    /**
+     * Get route matched by the uri of the request
+     *
+     * @return Route
+     */
+    public function route(): Route {
+        return $this->route;
+    }
+
+    /**
+     * Set request route
+     *
+     * @param Route $route
+     * @return self
+     */
+    public function setRoute(Route $route): self {
+        $this->route = $route;
+        return $this;
+    } 
+
+    /**
      * Get the request HTTP method
      *
      * @return HttpMethod
@@ -68,6 +94,17 @@ class Request
     public function method(): HttpMethod
     {
         return $this->method;
+    }
+
+    /**
+     * Sets the request HTTP method
+     *
+     * @param HttpMethod $method
+     * @return self
+     */
+    public function setMethod(HttpMethod $method): self {
+        $this->method = $method;
+        return $this;
     }
 
     /**
@@ -81,6 +118,17 @@ class Request
     }
 
     /**
+     * Set Post Data
+     *
+     * @param array $data
+     * @return self
+     */
+    public function setPostData(array $data): self {
+        $this->data = $data;
+        return $this;
+    }
+
+    /**
      * Get query parameters
      *
      * @return array
@@ -88,5 +136,25 @@ class Request
     public function query(): array
     {
         return $this->query;
+    }
+
+    /**
+     * Sets request query parameters
+     *
+     * @param array $data
+     * @return self
+     */
+    public function setQueryParameters(array $query): self {
+        $this->query = $query;
+        return $this;
+    }
+
+    /**
+     * Get all route parameters
+     *
+     * @return array
+     */
+    public function routeParameters(): array {
+        return $this->route->parseParameters($this->uri);
     }
 }

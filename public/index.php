@@ -10,8 +10,8 @@ use Lune\Routing\Router;
 
 $router = new Router();
 
-$router->get('/test', function (Request $request) {        
-    return Response::text("GET OK");
+$router->get('/test/{param}/{hey}', function (Request $request) {        
+    return Response::json($request->routeParameters());
 });
 
 $router->post('/test', function (Request $request) {
@@ -24,8 +24,9 @@ $router->get('/redirect', function (Request $request) {
 
 $server = new phpNativeServer();
 try { 
-    $request = new Request($server);
+    $request = $server->getRequest();
     $route = $router->resolve($request);
+    $request->setRoute($route);
     $action = $route->action();
     $response = $action($request);
     $server->sendResponse($response);
