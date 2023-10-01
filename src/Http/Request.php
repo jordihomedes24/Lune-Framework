@@ -3,60 +3,57 @@
 namespace Lune\Http;
 
 use Lune\Routing\Route;
-use Lune\Server\Server;
 
 /**
- * HTTP request
+ * HTTP request.
  */
-class Request
-{
+class Request {
     /**
-     * Request HTTP uri
+     * URI requested by the client.
      *
      * @var string
      */
     protected string $uri;
 
     /**
-     * Route matched by uri
+     * Route matched by URI.
      *
      * @var Route
      */
     protected Route $route;
 
     /**
-     * Request HTTP method
+     * HTTP method used for this request.
      *
      * @var HttpMethod
      */
     protected HttpMethod $method;
 
     /**
-     * Request HTTP data
+     * POST data.
      *
      * @var array
      */
     protected array $data;
 
     /**
-     * Query parameters
+     * Query parameters.
      *
      * @var array
      */
     protected array $query;
 
     /**
-     * Get the request uri
+     * Get the request URI.
      *
      * @return string
      */
-    public function uri(): string
-    {
+    public function uri(): string {
         return $this->uri;
     }
 
     /**
-     * Set request uri
+     * Set request URI.
      *
      * @param string $uri
      * @return self
@@ -67,7 +64,7 @@ class Request
     }
 
     /**
-     * Get route matched by the uri of the request
+     * Get route matched by the URI of this request.
      *
      * @return Route
      */
@@ -76,7 +73,7 @@ class Request
     }
 
     /**
-     * Set request route
+     * Set route for this request.
      *
      * @param Route $route
      * @return self
@@ -84,20 +81,19 @@ class Request
     public function setRoute(Route $route): self {
         $this->route = $route;
         return $this;
-    } 
+    }
 
     /**
-     * Get the request HTTP method
+     * Get the request HTTP method.
      *
      * @return HttpMethod
      */
-    public function method(): HttpMethod
-    {
+    public function method(): HttpMethod {
         return $this->method;
     }
 
     /**
-     * Sets the request HTTP method
+     * Set HTTP method.
      *
      * @param HttpMethod $method
      * @return self
@@ -108,17 +104,22 @@ class Request
     }
 
     /**
-     * Get POST data
+     * Get all POST data as key-value or get only specific value by providing
+     * a `$key`.
      *
-     * @return array
+     * @return array|string|null Null if the key doesn't exist, the value of
+     * the key if it is present or all the data if no key was provided.
      */
-    public function data(): array
-    {
-        return $this->data;
+    public function data(?string $key = null): array|string|null {
+        if (is_null($key)) {
+            return $this->data;
+        }
+
+        return $this->data[$key] ?? null;
     }
 
     /**
-     * Set Post Data
+     * Set POST data.
      *
      * @param array $data
      * @return self
@@ -129,19 +130,24 @@ class Request
     }
 
     /**
-     * Get query parameters
+     * Get all query params as key-value or get only specific value by providing
+     * a `$key`.
      *
-     * @return array
+     * @return array|string|null Null if the key doesn't exist, the value of
+     * the key if it is present or all the query params if no key was provided.
      */
-    public function query(): array
-    {
-        return $this->query;
+    public function query(?string $key = null): array|string|null {
+        if (is_null($key)) {
+            return $this->query;
+        }
+
+        return $this->query[$key] ?? null;
     }
 
     /**
-     * Sets request query parameters
+     * Set query parameters.
      *
-     * @param array $data
+     * @param array $query
      * @return self
      */
     public function setQueryParameters(array $query): self {
@@ -150,11 +156,19 @@ class Request
     }
 
     /**
-     * Get all route parameters
+     * Get all route params as key-value or get only specific value by providing
+     * a `$key`.
      *
-     * @return array
+     * @return array|string|null Null if the key doesn't exist, the value of
+     * the key if it is present or all the route params if no key was provided.
      */
-    public function routeParameters(): array {
-        return $this->route->parseParameters($this->uri);
+    public function routeParameters(?string $key = null): array|string|null {
+        $parameters = $this->route->parseParameters($this->uri);
+
+        if (is_null($key)) {
+            return $parameters;
+        }
+
+        return $parameters[$key] ?? null;
     }
 }
