@@ -8,14 +8,16 @@ use Lune\Routing\Route;
 use Lune\Server\Server;
 use PHPUnit\Framework\TestCase;
 
-class RequestTest extends TestCase {
-    public function test_request_returns_values_from_server_correctly() {
+class RequestTest extends TestCase
+{
+    public function test_request_returns_values_from_server_correctly()
+    {
         $uri = "/test";
         $method = HttpMethod::POST;
         $data = [ "test" => "hey", "foo" => "bar" ];
         $query = [ "a" => "1", "b" => "2", "c" => "3" ];
 
-        $request = (new Request)
+        $request = (new Request())
             ->setUri($uri)
             ->setMethod($method)
             ->setPostData($data)
@@ -27,27 +29,30 @@ class RequestTest extends TestCase {
         $this->assertEquals($request->query(), $query);
     }
 
-    public function test_data_returns_value_if_key_is_given() {
+    public function test_data_returns_value_if_key_is_given()
+    {
         $data = [ "test" => "hey", "foo" => "bar" ];
 
-        $request = (new Request)->setPostData($data);
+        $request = (new Request())->setPostData($data);
 
         $this->assertEquals($request->data("test"), $data["test"]);
         $this->assertEquals($request->data("foo"), $data["foo"]);
         $this->assertNull($request->data("not-exist"));
-    } 
+    }
 
-    public function test_query_returns_value_if_key_is_given() {
+    public function test_query_returns_value_if_key_is_given()
+    {
         $query = [ "a" => "1", "b" => "2", "c" => "3" ];
 
-        $request = (new Request)->setQueryParameters($query);
+        $request = (new Request())->setQueryParameters($query);
 
         $this->assertEquals($request->query("b"), $query["b"]);
         $this->assertEquals($request->query("a"), $query["a"]);
         $this->assertNull($request->data("not-exist"));
-    } 
+    }
 
-    public function test_route_parameters_returns_value_if_key_is_given() {
+    public function test_route_parameters_returns_value_if_key_is_given()
+    {
         $route = new Route('/test/{param}/foo/{bar}', fn () => "test");
         $request = (new Request())
             ->setRoute($route)

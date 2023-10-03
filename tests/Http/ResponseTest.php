@@ -5,8 +5,10 @@ namespace Lune\Tests\Http;
 use Lune\Http\Response;
 use PHPUnit\Framework\TestCase;
 
-class ResponseTest extends TestCase {
-    public function test_json_response_is_constructed_correctly() {
+class ResponseTest extends TestCase
+{
+    public function test_json_response_is_constructed_correctly()
+    {
         $content = ["test" => "foo", "num" => 2];
         $response = Response::json($content);
 
@@ -15,7 +17,8 @@ class ResponseTest extends TestCase {
         $this->assertEquals(["content-type" => "application/json"], $response->headers());
     }
 
-    public function test_text_response_is_constructed_correctly() {
+    public function test_text_response_is_constructed_correctly()
+    {
         $content = "test";
         $response = Response::text($content);
 
@@ -24,7 +27,8 @@ class ResponseTest extends TestCase {
         $this->assertEquals(["content-type" => "text/plain"], $response->headers());
     }
 
-    public function test_redirect_response_is_constructed_correctly() {
+    public function test_redirect_response_is_constructed_correctly()
+    {
         $uri = "/redirect/uri";
         $response = Response::redirect($uri);
 
@@ -33,7 +37,8 @@ class ResponseTest extends TestCase {
         $this->assertEquals(["location" => $uri], $response->headers());
     }
 
-    public function test_prepare_method_removes_content_headers_if_there_is_no_content() {
+    public function test_prepare_method_removes_content_headers_if_there_is_no_content()
+    {
         $response = new Response();
         $response->setContentType("Test");
         $response->setHeader("Content-Length", 10);
@@ -42,7 +47,8 @@ class ResponseTest extends TestCase {
         $this->assertEmpty($response->headers());
     }
 
-    public function test_prepare_method_adds_content_length_header_if_there_is_content() {
+    public function test_prepare_method_adds_content_length_header_if_there_is_content()
+    {
         $content = "test";
         $response = Response::text($content);
         $response->prepare();

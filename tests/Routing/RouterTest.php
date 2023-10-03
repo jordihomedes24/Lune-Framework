@@ -11,7 +11,7 @@ class RouterTest extends TestCase
 {
     private function createMockRequest(string $uri, HttpMethod $method)
     {
-        return (new Request)
+        return (new Request())
             ->setUri($uri)
             ->setMethod($method);
     }

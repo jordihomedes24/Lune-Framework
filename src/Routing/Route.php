@@ -5,7 +5,8 @@ namespace Lune\Routing;
 /**
  * This class stores the URI regex and action.
  */
-class Route {
+class Route
+{
     /**
      * URI defined in the format `"/route/{param}"`.
      *
@@ -40,7 +41,8 @@ class Route {
      * @param string $uri
      * @param \Closure $action
      */
-    public function __construct(string $uri, \Closure $action) {
+    public function __construct(string $uri, \Closure $action)
+    {
         $this->uri = $uri;
         $this->action = $action;
         $this->regex = preg_replace('/\{([a-zA-Z]+)\}/', '([a-zA-Z0-9]+)', $uri);
@@ -53,7 +55,8 @@ class Route {
      *
      * @return string
      */
-    public function uri(): string {
+    public function uri(): string
+    {
         return $this->uri;
     }
 
@@ -63,7 +66,8 @@ class Route {
      *
      * @return \Closure
      */
-    public function action(): \Closure {
+    public function action(): \Closure
+    {
         return $this->action;
     }
 
@@ -73,7 +77,8 @@ class Route {
      * @param string $uri
      * @return boolean
      */
-    public function matches(string $uri): bool {
+    public function matches(string $uri): bool
+    {
         return preg_match("#^$this->regex/?$#", $uri);
     }
 
@@ -82,7 +87,8 @@ class Route {
      *
      * @return boolean
      */
-    public function hasParameters(): bool {
+    public function hasParameters(): bool
+    {
         return count($this->parameters) > 0;
     }
 
@@ -92,9 +98,14 @@ class Route {
      * @param string $uri
      * @return array
      */
-    public function parseParameters(string $uri): array {
+    public function parseParameters(string $uri): array
+    {
         preg_match("#^$this->regex$#", $uri, $arguments);
 
         return array_combine($this->parameters, array_slice($arguments, 1));
+    }
+
+    public static function get(string $uri, \Closure $action)
+    {
     }
 }
