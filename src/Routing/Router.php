@@ -55,10 +55,34 @@ class Router
         $action = $route->action();
 
         if ($route->hasMiddlewares()) {
-            //run middlewares
+            return $this->runMiddlewares($request, $route->middlewares(), $action);
         }
 
         return $action($request);
+    }
+
+    protected function callNextMiddleware(Request $request)
+    {
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @param \Lune\Http\Middleware[] $middlewares
+     * @param Closure $action
+     * @return Response
+     */
+    protected function runMiddlewares(Request $request, array $middlewares, Closure $action): Response
+    {
+        if (count($middlewares) == 0) {
+            return $action($request);
+        }
+
+        return $middlewares[0]->handle(
+            $request,
+            fn ($request) => $this->runMiddlewares($request, array_slice($middlewares, 1), $action)
+        );
     }
 
     /**

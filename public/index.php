@@ -30,7 +30,10 @@ class AuthMiddleware implements Middleware {
             return Response::json(["Message" => "Not authenticated"])->setStatus(404);
         }
 
-        return $next();
+        $response = $next($request);
+        $response->setHeader('X-Test-Custom-Header', 'Test');
+
+        return $response;
     }
 }
 
