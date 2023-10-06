@@ -2,6 +2,9 @@
 
 namespace Lune\Routing;
 
+use Lune\App;
+use Lune\Container\Container;
+
 /**
  * This class stores the URI regex and action.
  */
@@ -34,6 +37,13 @@ class Route
      * @var string[]
      */
     protected array $parameters;
+
+    /**
+     * HTTP middlewares
+     *
+     * @var \Lune\Http\Middleware[]
+     */
+    protected array $middlewares = [];
 
     /**
      * Create a new route with the given URI and action.
@@ -72,6 +82,27 @@ class Route
     }
 
     /**
+     * Get all middlewares from this route.
+     *
+     * @return \Lune\Http\Middleware[]
+     */
+    public function middlewares(): array
+    {
+        return $this->middlewares;
+    }
+
+    public function setMiddlewares(array $middlewares): self
+    {
+        $this->middlewares = array_map(fn ($middleware) => new $middleware(), $middlewares);
+        return $this;
+    }
+
+    public function hasMiddlewares(): bool
+    {
+        return count($this->middlewares) > 0;
+    }
+
+    /**
      * Check if the given `$uri` matches the regex of this route.
      *
      * @param string $uri
@@ -105,7 +136,9 @@ class Route
         return array_combine($this->parameters, array_slice($arguments, 1));
     }
 
-    public static function get(string $uri, \Closure $action)
+    public static function get(string $uri, \Closure $action): Route
     {
+        $app = Container::resolve(App::class);
+        return $app->router->get($uri, $action);
     }
 }
