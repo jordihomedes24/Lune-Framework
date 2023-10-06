@@ -61,10 +61,6 @@ class Router
         return $action($request);
     }
 
-    protected function callNextMiddleware(Request $request)
-    {
-    }
-
     /**
      * Undocumented function
      *

@@ -2,8 +2,10 @@
 
 namespace Lune\Tests\Routing;
 
+use Closure;
 use Lune\Http\HttpMethod;
 use Lune\Http\Request;
+use Lune\Http\Response;
 use Lune\Routing\Router;
 use PHPUnit\Framework\TestCase;
 
@@ -73,8 +75,84 @@ class RouterTest extends TestCase
 
         foreach ($routes as [$method, $uri, $action]) {
             $route = $router->resolveRoute($this->createMockRequest($uri, $method));
-            ;
             $this->assertEquals($action, $route->action());
         };
+    }
+
+    public function test_run_middlewares()
+    {
+        $middleware1 = new class () {
+            public function handle(Request $request, Closure $next): Response
+            {
+                $response = $next($request);
+                $response->setHeader('x-test-one', 'one');
+
+                return $response;
+            }
+        };
+
+        $middleware2 = new class () {
+            public function handle(Request $request, Closure $next): Response
+            {
+                $response = $next($request);
+                $response->setHeader('x-test-two', 'two');
+
+                return $response;
+            }
+        };
+
+        $router = new Router();
+        $uri = '/test';
+        $expectedResponse = Response::text("test");
+        $router->get($uri, fn ($request) => $expectedResponse)
+            ->setMiddlewares([$middleware1, $middleware2]);
+
+        $response = $router->resolve($this->createMockRequest($uri, HttpMethod::GET));
+
+        $this->assertEquals($response->headers("x-test-one"), "one");
+        $this->assertEquals($response->headers("x-test-two"), "two");
+        $this->assertEquals($response, $expectedResponse);
+    }
+
+    public function test_run_middlewares_stopping_stack()
+    {
+        $middleware1 = new class () {
+            public function handle(Request $request, Closure $next): Response
+            {
+                $response = $next($request);
+                $response->setHeader('x-test-one', 'one');
+
+                return $response;
+            }
+        };
+
+        $middleware2 = new class () {
+            public function handle(Request $request, Closure $next): Response
+            {
+                return Response::text("I'M STOPPING THE STACK");
+            }
+        };
+
+        $middleware3 = new class () {
+            public function handle(Request $request, Closure $next): Response
+            {
+                $response = $next($request);
+                $response->setHeader('x-test-two', 'two');
+
+                return $response;
+            }
+        };
+
+        $router = new Router();
+        $uri = '/test';
+        $expectedResponse = Response::text("test");
+        $router->get($uri, fn ($request) => $expectedResponse)
+            ->setMiddlewares([$middleware1, $middleware2, $middleware3]);
+
+        $response = $router->resolve($this->createMockRequest($uri, HttpMethod::GET));
+
+        $this->assertEquals($response->headers("x-test-one"), "one");
+        $this->assertNull($response->headers("x-test-two"));
+        $this->assertEquals($response, Response::text("I'M STOPPING THE STACK")->setHeader('x-test-one', 'one'));
     }
 }

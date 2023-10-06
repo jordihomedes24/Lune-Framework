@@ -53,13 +53,18 @@ class Response
     }
 
     /**
-     * Get response HTTP headers
+     * Get Response HTTP headers
      *
-     * @return array<string,string>
+     * @param string|null $key
+     * @return array|string|null
      */
-    public function headers(): array
+    public function headers(string $key = null): array|string|null
     {
-        return $this->headers;
+        if (is_null($key)) {
+            return $this->headers;
+        }
+
+        return $this->headers[strtolower($key)] ?? null;
     }
 
     /**
