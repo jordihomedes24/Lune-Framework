@@ -2,6 +2,9 @@
 
 namespace Lune\Http;
 
+use Lune\App;
+use Lune\Container\Container;
+
 use function PHPUnit\Framework\isNull;
 
 /**
@@ -178,5 +181,14 @@ class Response
         return (new self())
             ->setStatus(302)
             ->setHeader("Location", $uri);
+    }
+
+    public static function view(string $view): self
+    {
+        $content = Container::resolve(App::class)->viewEngine->render($view);
+
+        return (new self())
+            ->setContentType("text/html")
+            ->setContent($content);
     }
 }

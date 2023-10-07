@@ -9,6 +9,8 @@ use Lune\Http\Response;
 use Lune\Routing\Router;
 use Lune\Server\phpNativeServer;
 use Lune\Server\Server;
+use Lune\View\LuneEngine;
+use Lune\View\View;
 
 class App
 {
@@ -18,12 +20,15 @@ class App
 
     public Server $server;
 
+    public View $viewEngine;
+
     public static function bootstrap()
     {
         $app = Container::singleton(App::class);
         $app->router = new Router();
         $app->server = new phpNativeServer();
         $app->request = $app->server->getRequest();
+        $app->viewEngine = new LuneEngine(__DIR__ . "/../views");
 
         return $app;
     }
