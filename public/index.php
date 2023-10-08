@@ -3,17 +3,15 @@
 require_once "../vendor/autoload.php";
 
 use Lune\App;
-use Lune\Container\Container;
 use Lune\Http\Middleware;
 use Lune\Http\Request;
 use Lune\Http\Response;
 use Lune\Routing\Route;
-use Lune\Routing\Router;
 
 $app = App::bootstrap();
 
 $app->router->get('/test/{param}', function (Request $request) {        
-    return Response::json($request->routeParameters());
+    return json($request->routeParameters());
 });
 
 $app->router->post('/test', function (Request $request) {
@@ -21,13 +19,13 @@ $app->router->post('/test', function (Request $request) {
 });
 
 $app->router->get('/redirect', function (Request $request) {
-    return Response::redirect("/test");
+    return redirect("/test");
 });
 
 class AuthMiddleware implements Middleware {
     public function handle(Request $request, Closure $next): Response {
         if ($request->headers('Authorization') != 'test') {
-            return Response::json(["Message" => "Not authenticated"])->setStatus(404);
+            return json(["Message" => "Not authenticated"])->setStatus(404);
         }
 
         $response = $next($request);
@@ -37,11 +35,11 @@ class AuthMiddleware implements Middleware {
     }
 }
 
-Route::get('/html', fn (Request $request) => Response::view('home', [
-    'user' => 'Jordi'
-]));
+Route::get('/html', fn (Request $request) => view('home', [ 'user' => 'Jordi' ]));
 
-Route::get('/middlewares', fn (Request $request) => Response::json(["message" => "Hello"]))
+Route::get('/middlewares', fn (Request $request) => json(["message" => "Hello"]))
     ->setMiddlewares([AuthMiddleware::class]);
+
+
 
 $app->run();

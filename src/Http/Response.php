@@ -2,11 +2,6 @@
 
 namespace Lune\Http;
 
-use Lune\App;
-use Lune\Container\Container;
-
-use function PHPUnit\Framework\isNull;
-
 /**
  * HTTP response that will be sent to the client.
  */
@@ -185,7 +180,7 @@ class Response
 
     public static function view(string $view, array $params = [], string $layout = null): self
     {
-        $content = Container::resolve(App::class)->viewEngine->render($view, $params, $layout);
+        $content = app()->viewEngine->render($view, $params, $layout);
 
         return (new self())
             ->setContentType("text/html")
