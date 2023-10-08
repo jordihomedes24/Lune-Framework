@@ -37,7 +37,9 @@ class AuthMiddleware implements Middleware {
     }
 }
 
-Route::get('/html', fn (Request $request) => Response::view('home'));
+Route::get('/html', fn (Request $request) => Response::view('home', [
+    'user' => 'Jordi'
+]));
 
 Route::get('/middlewares', fn (Request $request) => Response::json(["message" => "Hello"]))
     ->setMiddlewares([AuthMiddleware::class]);

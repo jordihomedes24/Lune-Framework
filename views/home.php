@@ -1,1 +1,2 @@
-<h1>Hey, this is a view<h1>
+<h1>Hello, <?= $user ?></h1>
+    
