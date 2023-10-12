@@ -41,4 +41,8 @@ class Rule
     {
         return new RequiredWhen($comparedField, $operator, $value);
     }
+
+    public static function from(string $ruleString): ValidationRule
+    {
+    }
 }
