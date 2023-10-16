@@ -45,7 +45,7 @@ Route::get('/middlewares', fn (Request $request) => json(["message" => "Hello"])
 Route::post('/validate', fn (Request $request) => json($request->validate([
     'test' => Rule::required(),
     'num' => Rule::number(),
-    'email' => [Rule::required(), Rule::email()]
+    'email' => [ 'required', 'email' ]
 ], [
     'email' => [
         Required::class => "HEY YOU THIS FIELD IS REQUIRED"
