@@ -3,6 +3,7 @@
 namespace Lune\Validation;
 
 use Lune\Validation\Exceptions\ValidationException;
+use ReflectionClass;
 
 class Validator
 {
@@ -35,7 +36,7 @@ class Validator
             if (count($fieldUnderValidationErrors) > 0) {
                 $errors[$field] = $fieldUnderValidationErrors;
             } else {
-                $validated[$field] = $this->data[$field];
+                $validated[$field] = $this->data[$field] ?? null;
             }
         }
 

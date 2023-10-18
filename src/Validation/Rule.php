@@ -81,13 +81,12 @@ class Rule
     public static function parseRuleWithoutParameters(string $ruleName): ValidationRule
     {
         $class = new ReflectionClass(self::$rules[$ruleName]);
-        $constructorParameters = $class->getConstructor()?->getParameters() ?? [];
 
-        if (count($constructorParameters) > 0) {
+        if (count($class->getConstructor()?->getParameters() ?? []) > 0) {
             throw new RuleParseException("Rule $ruleName requires parameters, but none has been passed");
         }
 
-        return $class()->newInstance();
+        return $class->newInstance();
     }
 
     public static function parseRuleWithParameters(string $ruleName, string $params): ValidationRule
@@ -95,7 +94,7 @@ class Rule
         $class = new ReflectionClass(self::$rules[$ruleName]);
         $constructorParameters = $class->getConstructor()?->getParameters() ?? [];
 
-        $givenParameters = array_filter(explode(",", $params), fn ($param) => !empty($p));
+        $givenParameters = array_filter(explode(",", $params), fn ($p) => !empty($p));
 
         if (count($givenParameters) != count($constructorParameters)) {
             throw new RuleParseException(sprintf(

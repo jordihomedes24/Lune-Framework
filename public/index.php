@@ -7,7 +7,6 @@ use Lune\Http\Middleware;
 use Lune\Http\Request;
 use Lune\Http\Response;
 use Lune\Routing\Route;
-use Lune\Validation\Rule;
 use Lune\Validation\Rules\Required;
 
 $app = App::bootstrap();
@@ -43,15 +42,11 @@ Route::get('/middlewares', fn (Request $request) => json(["message" => "Hello"])
     ->setMiddlewares([AuthMiddleware::class]);
 
 Route::post('/validate', fn (Request $request) => json($request->validate([
-    'test' => Rule::required(),
-    'num' => Rule::number(),
-    'email' => [ 'required', 'email' ]
+    'email' => [ 'required_with:num' ],
+    'num' => [ 'number' ]
 ], [
     'email' => [
-        Required::class => "HEY YOU THIS FIELD IS REQUIRED"
-    ],
-    'test' => [
-        Required::class => "THIS IS REQUIRED BRO"
+        'email' => "HEY YOU THIS FIELD HAS TO BE AN EMAIL"
     ]
 ])));
 

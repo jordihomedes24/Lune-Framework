@@ -10,6 +10,7 @@ use Lune\Routing\Router;
 use Lune\Server\phpNativeServer;
 use Lune\Server\Server;
 use Lune\Validation\Exceptions\ValidationException;
+use Lune\Validation\Rule;
 use Lune\View\LuneEngine;
 use Lune\View\View;
 use Throwable;
@@ -31,6 +32,7 @@ class App
         $app->server = new phpNativeServer();
         $app->request = $app->server->getRequest();
         $app->viewEngine = new LuneEngine(__DIR__ . "/../views");
+        Rule::loadDefaultRules();
 
         return $app;
     }
@@ -46,11 +48,12 @@ class App
             $this->abort(json($e->errors())->setStatus(422));
         } catch (Throwable $e) {
             $response = json([
+                "error" => $e::class,
                 "message" => $e->getMessage(),
                 "trace" => $e->getTrace()
             ]);
 
-            $this->abort($response);
+            $this->abort($response->setStatus(500));
         }
     }
 
