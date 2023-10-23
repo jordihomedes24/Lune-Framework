@@ -2,7 +2,13 @@
 
 namespace Lune\Tests\Validation;
 
-use Lune\Validation\Rule;
+use Lune\Validation\Exceptions\RuleParseException;
+use Lune\Validation\Rules\Email;
+use Lune\Validation\Rules\LessThan;
+use Lune\Validation\Rules\Number;
+use Lune\Validation\Rules\Required;
+use Lune\Validation\Rules\RequiredWhen;
+use Lune\Validation\Rules\RequiredWith;
 use PHPUnit\Framework\TestCase;
 
 class ValidationRuleTest extends TestCase
@@ -29,8 +35,8 @@ class ValidationRuleTest extends TestCase
      */
     public function test_email($email, $expected)
     {
-        $data = [ 'email' => $email ];
-        $rule = Rule::email();
+        $data = ['email' => $email];
+        $rule = new Email();
         $this->assertEquals($expected, $rule->isValid('email', $data));
     }
 
@@ -49,25 +55,18 @@ class ValidationRuleTest extends TestCase
      */
     public function test_required($value, $expected)
     {
-        $data = [ 'test' => $value ];
-        $rule = Rule::required();
+        $data = ['test' => $value];
+        $rule = new Required();
         $this->assertEquals($expected, $rule->isValid('test', $data));
     }
 
     public function test_required_with()
     {
-        $rule = Rule::requiredWith('test');
-        $data = [ 'test' => 'a', 'other' => 'hello' ];
-        $this->assertTrue($rule->isValid('other', $data));
-
-        $data = [ 'test' => 'a', 'other' => '' ];
-        $this->assertFalse($rule->isValid('other', $data));
-
-        $data = [ 'test' => '', 'other' => '' ];
-        $this->assertTrue($rule->isValid('other', $data));
-
-        $data = [ 'other_test' => 'asdasd', 'other' => '' ];
-        $this->assertTrue($rule->isValid('other', $data));
+        $rule = new RequiredWith('other');
+        $data = ['other' => 10, 'test' => 5];
+        $this->assertTrue($rule->isValid('test', $data));
+        $data = ['other' => 10];
+        $this->assertFalse($rule->isValid('test', $data));
     }
 
     public static function lessThanData()
@@ -87,7 +86,7 @@ class ValidationRuleTest extends TestCase
      */
     public function test_less_than($value, $check, $expected)
     {
-        $rule = Rule::lessThan($value);
+        $rule = new LessThan($value);
         $data = ["test" => $check];
         $this->assertEquals($expected, $rule->isValid("test", $data));
     }
@@ -118,7 +117,7 @@ class ValidationRuleTest extends TestCase
      */
     public function test_number($n, $expected)
     {
-        $rule = Rule::number();
+        $rule = new Number();
         $data = ["test" => $n];
         $this->assertEquals($expected, $rule->isValid("test", $data));
     }
@@ -140,7 +139,15 @@ class ValidationRuleTest extends TestCase
      */
     public function test_required_when($other, $operator, $compareWith, $data, $field, $expected)
     {
-        $rule = Rule::requiredWhen($other, $operator, $compareWith);
+        $rule = new RequiredWhen($other, $operator, $compareWith);
         $this->assertEquals($expected, $rule->isValid($field, $data));
+    }
+
+    public function test_required_when_throws_parse_rule_exception_when_operator_is_invalid()
+    {
+        $rule = new RequiredWhen("other", "|||", "test");
+        $data = ["other" => 5, "test" => 1];
+        $this->expectException(RuleParseException::class);
+        $rule->isValid("test", $data);
     }
 }
